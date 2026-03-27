@@ -18,28 +18,23 @@ const getResourceName = (url, baseUrl) => {
   const { hostname, pathname } = new URL(fullUrl);
   
   // Получаем расширение файла
-  let ext = path.extname(pathname);
+  const ext = path.extname(pathname);
   
-  // Если нет расширения, проверяем, может быть это HTML страница
-  if (!ext) {
-    // Если путь заканчивается на / или это директория, добавляем .html
-    if (pathname.endsWith('/') || !pathname.includes('.')) {
-      ext = '.html';
-    }
+  // Если это HTML страница (нет расширения)
+  if (!ext || ext === '') {
+    // Для HTML страниц сохраняем полный путь с .html
+    let name = `${hostname}${pathname}`.replace(/[^\w]/g, '-');
+    name = name.replace(/-+$/, '');
+    name = name.replace(/-$/, '');
+    return `${name}.html`;
   }
   
-  // Убираем расширение из pathname для формирования имени
-  let nameWithoutExt = pathname;
-  if (ext) {
-    nameWithoutExt = pathname.slice(0, -ext.length);
-  }
-  
-  // Формируем имя без расширения
+  // Для обычных ресурсов с расширением
+  let nameWithoutExt = pathname.slice(0, -ext.length);
   let name = `${hostname}${nameWithoutExt}`.replace(/[^\w]/g, '-');
   name = name.replace(/-+$/, '');
   
-  // Добавляем расширение
-  return ext ? `${name}${ext}` : name;
+  return `${name}${ext}`;
 };
 
 const getResourcesDir = (url) => {
