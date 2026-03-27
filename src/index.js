@@ -10,13 +10,22 @@ const log = debug('page-loader');
 const getFileName = (url) => {
   const urlObj = new URL(url);
   const name = `${urlObj.hostname}${urlObj.pathname}`.replace(/[^\w]/g, '-');
-  return `${name}.html`;
+  // Убираем лишние дефисы в конце
+  return `${name.replace(/-+$/, '')}.html`;
 };
 
 const getResourceName = (url, baseUrl) => {
   const fullUrl = new URL(url, baseUrl).toString();
   const { hostname, pathname } = new URL(fullUrl);
-  const name = `${hostname}${pathname}`.replace(/[^\w]/g, '-');
+  let name = `${hostname}${pathname}`.replace(/[^\w]/g, '-');
+  // Убираем лишние дефисы в конце
+  name = name.replace(/-+$/, '');
+  
+  // Добавляем расширение из URL
+  const extension = path.extname(pathname);
+  if (extension) {
+    return name;
+  }
   return name;
 };
 
@@ -80,7 +89,6 @@ const ensureDirectoryExists = async (dirPath) => {
   try {
     await fs.access(dirPath);
   } catch (error) {
-    // Директория не существует - создаем
     await fs.mkdir(dirPath, { recursive: true });
   }
 };
@@ -89,7 +97,6 @@ const downloadPage = async (url, outputDir = process.cwd()) => {
   log(`Starting download: ${url}`);
   log(`Output directory: ${outputDir}`);
 
-  // Проверяем существование outputDir
   try {
     await fs.access(outputDir);
   } catch (error) {
