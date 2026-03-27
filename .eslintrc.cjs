@@ -15,5 +15,6 @@
     'no-underscore-dangle': 'off',
     'no-restricted-syntax': 'off',
     'linebreak-style': ['error', 'windows'],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
 };
