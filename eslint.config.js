@@ -13,11 +13,7 @@
       "no-console": "off",
       "no-underscore-dangle": "off",
       "no-restricted-syntax": "off",
-      "@stylistic/semi": "off",
-      "@stylistic/quotes": "off",
-      "@stylistic/brace-style": "off",
-      "@stylistic/eol-last": "off",
-      "@stylistic/arrow-parens": "off",
+      "no-unused-vars": "off",
     },
   },
 ];
