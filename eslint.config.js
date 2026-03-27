@@ -18,7 +18,7 @@ export default [
       "no-console": "off",
       "no-underscore-dangle": "off",
       "no-restricted-syntax": "off",
-      "@stylistic/linebreak-style": ["error", "windows"],
+      "@stylistic/linebreak-style": "off",
     },
   },
 ];
