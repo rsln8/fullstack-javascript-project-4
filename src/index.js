@@ -76,9 +76,25 @@ const processHtml = async (html, baseUrl, resourcesDir) => {
   return { html: $.html(), resources };
 };
 
+const ensureDirectoryExists = async (dirPath) => {
+  try {
+    await fs.access(dirPath);
+  } catch (error) {
+    // Директория не существует - создаем
+    await fs.mkdir(dirPath, { recursive: true });
+  }
+};
+
 const downloadPage = async (url, outputDir = process.cwd()) => {
   log(`Starting download: ${url}`);
   log(`Output directory: ${outputDir}`);
+
+  // Проверяем существование outputDir
+  try {
+    await fs.access(outputDir);
+  } catch (error) {
+    throw new Error(`Output directory does not exist: ${outputDir}`);
+  }
 
   const response = await axios.get(url);
   const html = response.data;
@@ -89,7 +105,7 @@ const downloadPage = async (url, outputDir = process.cwd()) => {
   const resourcesDir = path.join(outputDir, resourcesDirName);
 
   log(`Creating resources directory: ${resourcesDir}`);
-  await fs.mkdir(resourcesDir, { recursive: true });
+  await ensureDirectoryExists(resourcesDir);
 
   const { html: processedHtml, resources } = await processHtml(html, url, resourcesDirName);
 
