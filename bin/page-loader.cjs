@@ -1,8 +1,8 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 
 const { Command } = require('commander');
 const path = require('path');
-const downloadPage = require('../src/index.js');
+const downloadPage = require('../src/index.cjs');
 
 const program = new Command();
 

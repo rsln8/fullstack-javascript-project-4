@@ -1,8 +1,8 @@
-const fs = require('fs/promises');
+﻿const fs = require('fs/promises');
 const path = require('path');
 const os = require('os');
 const nock = require('nock');
-const downloadPage = require('../src/index.js');
+const downloadPage = require('../src/index.cjs');
 
 let tempDir;
 
