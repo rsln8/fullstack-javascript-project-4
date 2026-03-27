@@ -10,23 +10,28 @@ const log = debug('page-loader');
 const getFileName = (url) => {
   const urlObj = new URL(url);
   const name = `${urlObj.hostname}${urlObj.pathname}`.replace(/[^\w]/g, '-');
-  // Убираем лишние дефисы в конце
   return `${name.replace(/-+$/, '')}.html`;
 };
 
 const getResourceName = (url, baseUrl) => {
   const fullUrl = new URL(url, baseUrl).toString();
   const { hostname, pathname } = new URL(fullUrl);
-  let name = `${hostname}${pathname}`.replace(/[^\w]/g, '-');
-  // Убираем лишние дефисы в конце
+  
+  // Получаем расширение файла
+  const ext = path.extname(pathname);
+  
+  // Убираем расширение из pathname для формирования имени
+  let nameWithoutExt = pathname;
+  if (ext) {
+    nameWithoutExt = pathname.slice(0, -ext.length);
+  }
+  
+  // Формируем имя без расширения
+  let name = `${hostname}${nameWithoutExt}`.replace(/[^\w]/g, '-');
   name = name.replace(/-+$/, '');
   
-  // Добавляем расширение из URL
-  const extension = path.extname(pathname);
-  if (extension) {
-    return name;
-  }
-  return name;
+  // Добавляем расширение, если оно есть
+  return ext ? `${name}${ext}` : name;
 };
 
 const getResourcesDir = (url) => {
