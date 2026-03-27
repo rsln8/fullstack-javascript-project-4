@@ -16,10 +16,10 @@ const getFileName = (url) => {
 const getResourceName = (url, baseUrl) => {
   const fullUrl = new URL(url, baseUrl).toString();
   const { hostname, pathname } = new URL(fullUrl);
-  
+
   // Получаем расширение файла
   const ext = path.extname(pathname);
-  
+
   // Если это HTML страница (нет расширения)
   if (!ext || ext === '') {
     // Для HTML страниц сохраняем полный путь с .html
@@ -28,12 +28,12 @@ const getResourceName = (url, baseUrl) => {
     name = name.replace(/-$/, '');
     return `${name}.html`;
   }
-  
+
   // Для обычных ресурсов с расширением
-  let nameWithoutExt = pathname.slice(0, -ext.length);
+  const nameWithoutExt = pathname.slice(0, -ext.length);
   let name = `${hostname}${nameWithoutExt}`.replace(/[^\w]/g, '-');
   name = name.replace(/-+$/, '');
-  
+
   return `${name}${ext}`;
 };
 
