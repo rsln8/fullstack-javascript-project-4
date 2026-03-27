@@ -1,5 +1,10 @@
-﻿export default [
+﻿import stylistic from '@stylistic/eslint-plugin';
+
+export default [
   {
+    plugins: {
+      '@stylistic': stylistic,
+    },
     files: ["**/*.js", "**/*.cjs"],
     languageOptions: {
       sourceType: "module",
@@ -13,8 +18,7 @@
       "no-console": "off",
       "no-underscore-dangle": "off",
       "no-restricted-syntax": "off",
-      "linebreak-style": "off",
-      "import/no-extraneous-dependencies": "off",
+      "@stylistic/linebreak-style": ["error", "windows"],
     },
   },
 ];
