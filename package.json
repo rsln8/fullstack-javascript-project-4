@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "Page loader utility",
@@ -8,7 +8,7 @@
     "page-loader": "bin/page-loader.js"
   },
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:coverage": "npm test -- --coverage",
     "lint": "eslint ."
   },
