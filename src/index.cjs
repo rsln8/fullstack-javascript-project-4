@@ -16,24 +16,15 @@ const getFileName = (url) => {
 const getResourceName = (url, baseUrl) => {
   const fullUrl = new URL(url, baseUrl).toString();
   const { hostname, pathname } = new URL(fullUrl);
-
-  // Получаем расширение файла
   const ext = path.extname(pathname);
-
-  // Если это HTML страница (нет расширения)
   if (!ext || ext === '') {
-    // Для HTML страниц сохраняем полный путь с .html
     let name = `${hostname}${pathname}`.replace(/[^\w]/g, '-');
     name = name.replace(/-+$/, '');
-    name = name.replace(/-$/, '');
     return `${name}.html`;
   }
-
-  // Для обычных ресурсов с расширением
   const nameWithoutExt = pathname.slice(0, -ext.length);
   let name = `${hostname}${nameWithoutExt}`.replace(/[^\w]/g, '-');
   name = name.replace(/-+$/, '');
-
   return `${name}${ext}`;
 };
 
@@ -56,14 +47,12 @@ const downloadResource = async (url, outputDir, baseUrl) => {
   const fullUrl = new URL(url, baseUrl).toString();
   const resourceName = getResourceName(url, baseUrl);
   const filePath = path.join(outputDir, resourceName);
-
   log(`Downloading: ${fullUrl}`);
   const response = await axios({
     method: 'get',
     url: fullUrl,
     responseType: 'arraybuffer',
   });
-
   await fs.writeFile(filePath, response.data);
   log(`Saved: ${filePath}`);
   return filePath;
@@ -77,19 +66,17 @@ const processHtml = async (html, baseUrl, resourcesDir) => {
     script: 'src',
   };
   const resources = [];
-
   Object.entries(tags).forEach(([tag, attr]) => {
     $(tag).each((i, elem) => {
       const url = $(elem).attr(attr);
       if (url && isLocal(url, baseUrl)) {
         const resourceName = getResourceName(url, baseUrl);
-        const localPath = path.join(resourcesDir, resourceName);
+        const localPath = `${resourcesDir}/${resourceName}`;
         $(elem).attr(attr, localPath);
         resources.push({ url, fullUrl: new URL(url, baseUrl).toString() });
       }
     });
   });
-
   return { html: $.html(), resources };
 };
 
@@ -104,39 +91,30 @@ const ensureDirectoryExists = async (dirPath) => {
 const downloadPage = async (url, outputDir = process.cwd()) => {
   log(`Starting download: ${url}`);
   log(`Output directory: ${outputDir}`);
-
   try {
     await fs.access(outputDir);
   } catch (error) {
     throw new Error(`Output directory does not exist: ${outputDir}`);
   }
-
   const response = await axios.get(url);
   const html = response.data;
-
   const fileName = getFileName(url);
   const filePath = path.join(outputDir, fileName);
   const resourcesDirName = getResourcesDir(url);
   const resourcesDir = path.join(outputDir, resourcesDirName);
-
   log(`Creating resources directory: ${resourcesDir}`);
   await ensureDirectoryExists(resourcesDir);
-
   const { html: processedHtml, resources } = await processHtml(html, url, resourcesDirName);
-
   const tasks = resources.map((resource) => ({
     title: `Downloading ${resource.fullUrl}`,
     task: () => downloadResource(resource.url, resourcesDir, url),
   }));
-
   if (tasks.length > 0) {
     const listr = new Listr(tasks, { concurrent: true });
     await listr.run();
   }
-
   log(`Saving HTML to: ${filePath}`);
   await fs.writeFile(filePath, processedHtml);
-
   log(`Page downloaded successfully: ${filePath}`);
   return filePath;
 };

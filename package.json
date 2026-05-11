@@ -27,5 +27,13 @@
     "eslint": "^9.0.0",
     "jest": "^29.7.0",
     "nock": "^13.5.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsln8/fullstack-javascript-project-4.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rsln8/fullstack-javascript-project-4/issues"
+  },
+  "homepage": "https://github.com/rsln8/fullstack-javascript-project-4#readme"
 }
