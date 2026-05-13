@@ -1,4 +1,4 @@
-const fs = require('fs/promises')
+﻿const fs = require('fs/promises')
 const path = require('path')
 const axios = require('axios')
 const cheerio = require('cheerio')
@@ -39,7 +39,7 @@ const isLocal = (url, baseUrl) => {
     const { hostname: baseHost } = new URL(baseUrl)
     return linkHost === baseHost
   }
-  catch (_) {
+  catch {
     return false
   }
 }
